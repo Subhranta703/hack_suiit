@@ -6,8 +6,10 @@ import NotesSummarizer from "./components/NotesSummarizer";
 import TaskManager from "./components/TaskManager";
 import Timetable from "./components/Timetable";
 import StudyChatbot from "./components/StudyChatbot"; // Chatbot
-
 import "./App.css";
+
+// Import Icons
+import { FaBook, FaClipboardList, FaTasks, FaClock, FaVolumeUp } from "react-icons/fa"; 
 
 function App() {
   return (
@@ -17,17 +19,31 @@ function App() {
           <h1>🎓 Student Productivity Hub</h1>
         </header>
 
-        {/* Improved Navbar Design */}
-        <nav className="navbar">
-          <ul>
-            <li><Link to="/text-to-speech">Text to Speech</Link></li>
-            <li><Link to="/attendance">Attendance Tracker</Link></li>
-            <li><Link to="/notes">Notes Summarizer</Link></li>
-            <li><Link to="/tasks">Task Manager</Link></li>
-            <li><Link to="/timetable">Timetable</Link></li>
-          </ul>
-        </nav>
+        {/* Feature Cards Instead of Navbar */}
+        <div className="features-container">
+          <Link to="/text-to-speech" className="feature-card">
+            <FaVolumeUp className="feature-icon" />
+            <p>Text to Speech</p>
+          </Link>
+          <Link to="/attendance" className="feature-card">
+            <FaClipboardList className="feature-icon" />
+            <p>Attendance Tracker</p>
+          </Link>
+          <Link to="/notes" className="feature-card">
+            <FaBook className="feature-icon" />
+            <p>Notes Summarizer</p>
+          </Link>
+          <Link to="/tasks" className="feature-card">
+            <FaTasks className="feature-icon" />
+            <p>Task Manager</p>
+          </Link>
+          <Link to="/timetable" className="feature-card">
+            <FaClock className="feature-icon" />
+            <p>Timetable</p>
+          </Link>
+        </div>
 
+        {/* Page Routing */}
         <main className="main-content">
           <Routes>
             <Route path="/text-to-speech" element={<TextToSpeech />} />

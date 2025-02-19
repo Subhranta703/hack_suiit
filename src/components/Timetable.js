@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import "./Timetable.css";
 
 const Timetable = () => {
@@ -35,23 +34,13 @@ const Timetable = () => {
     }
   };
 
-  // Send WhatsApp Reminder
-  const sendWhatsAppReminder = async (task) => {
-    const phoneNumber = "8260912891"; // Change to recipient number
-    const message = `⏳ Reminder: ${task}`;
-
-    try {
-      await axios.post("https://api.callmebot.com/whatsapp.php", null, {
-        params: {
-          phone: phoneNumber,
-          text: message,
-          apikey: "YOUR_CALLMEBOT_API_KEY",
-        },
-      });
-      console.log("WhatsApp reminder sent!");
-    } catch (error) {
-      console.error("Error sending WhatsApp reminder:", error);
-    }
+  // Send WhatsApp Reminder (Pre-filled Message Link)
+  const sendWhatsAppReminder = (task) => {
+    const phoneNumber = "918260912891";  // Ensure correct format
+    const message = encodeURIComponent(`⏳ Reminder: ${task}`);
+    const whatsappLink = `https://wa.me/${phoneNumber}?text=${message}`;
+    
+    window.open(whatsappLink, "_blank"); // Opens WhatsApp chat with pre-filled message
   };
 
   // Add new schedule
