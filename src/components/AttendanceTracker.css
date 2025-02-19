@@ -1,0 +1,59 @@
+.attendance-container {
+    background: #e3f2fd;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    margin: auto;
+}
+
+.attendance-container h2 {
+    color: #1e88e5;
+    margin-bottom: 15px;
+}
+
+.attendance-container input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #42a5f5;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.attendance-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.attendance-button {
+    background: #1e88e5;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    flex: 1;
+}
+
+.attendance-button:hover {
+    background: #0d47a1;
+}
+
+.attendance-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 15px;
+}
+
+.attendance-list li {
+    background: white;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    border-left: 5px solid #42a5f5;
+    font-size: 16px;
+}

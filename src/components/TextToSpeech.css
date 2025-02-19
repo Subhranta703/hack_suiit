@@ -1,0 +1,75 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f4;
+  }
+  
+  .card {
+    background: white;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    width: 50%;
+    text-align: center;
+  }
+  
+  h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .file-input {
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+  }
+  
+  .textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: none;
+  }
+  
+  .button-container {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .speak-button, .gpt-button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .speak-button {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .gpt-button {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .speak-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .gpt-button:hover {
+    background-color: #218838;
+  }
+  
+  .gpt-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
