@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import "./StudyChatbot.css"; // Importing CSS for styling
+import axios from "axios";
+import "./StudyChatbot.css";
 
 function StudyChatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -7,31 +8,49 @@ function StudyChatbot() {
     { sender: "bot", text: "Hello! Ask me anything about studying 📚" },
   ]);
   const [input, setInput] = useState("");
+  const API_KEY = "AIzaSyAF7MBAQrGMyjJ86Lf4QaxIchF6KoDSzTQ"; // Replace with actual API Key
 
   useEffect(() => {
-    if (isOpen) {
-      alert("Ask me about study 📚!"); // Alert when chatbot opens
-    }
+    
   }, [isOpen]);
 
-  const handleSendMessage = () => {
+  const fetchAIResponse = async (userMessage) => {
+    try {
+      const response = await axios.post(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
+        {
+          contents: [{ role: "user", parts: [{ text: userMessage }] }],
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      console.log("API Response:", response.data);
+
+      return response.data.candidates?.[0]?.content?.parts?.[0]?.text || "I'm not sure, but I can try to help!";
+    } catch (error) {
+      console.error("API Error:", error.response?.data || error.message);
+      return "Sorry, I'm having trouble responding. Please try again!";
+    }
+  };
+
+  const handleSendMessage = async () => {
     if (!input.trim()) return;
 
     const userMessage = { sender: "user", text: input };
-    setMessages([...messages, userMessage]);
+    setMessages((prevMessages) => [...prevMessages, userMessage]);
 
-    let botResponse = "I'm here to help with studying! Can you ask something specific?";
-    if (input.toLowerCase().includes("best way to study")) {
-      botResponse = "Try the Pomodoro technique! Study for 25 minutes, then take a 5-minute break.";
-    } else if (input.toLowerCase().includes("concentration")) {
-      botResponse = "Eliminate distractions, use noise-canceling headphones, and take short breaks.";
-    } else if (input.toLowerCase().includes("memorization")) {
-      botResponse = "Use flashcards and teach the material to someone else!";
-    }
+    // Show a loading message while fetching response
+    setMessages((prevMessages) => [...prevMessages, { sender: "bot", text: "Thinking... 🤔" }]);
 
-    setTimeout(() => {
-      setMessages((prev) => [...prev, { sender: "bot", text: botResponse }]);
-    }, 1000);
+    const botResponse = await fetchAIResponse(input);
+
+    setMessages((prevMessages) =>
+      prevMessages.map((msg, index) =>
+        index === prevMessages.length - 1 ? { sender: "bot", text: botResponse } : msg
+      )
+    );
 
     setInput("");
   };

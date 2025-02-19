@@ -8,7 +8,7 @@ const NotesSummarizer = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const API_KEY = "AIzaSyAF7MBAQrGMyjJ86Lf4QaxIchF6KoDSzTQ"; // ⚠️ Replace with your actual Google Gemini API Key
+  const API_KEY = "AIzaSyAF7MBAQrGMyjJ86Lf4QaxIchF6KoDSzTQ"; // Replace with actual API Key
 
   const summarizeNotes = async () => {
     if (!notes.trim()) {
@@ -18,26 +18,30 @@ const NotesSummarizer = () => {
 
     setLoading(true);
     setError("");
+    setSummary("");
+
     try {
       const response = await axios.post(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateText",
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, // ✅ Updated API Endpoint
         {
-          prompt: { text: `Summarize the following notes:\n\n${notes}` },
-          temperature: 0.7,
+          contents: [{ role: "user", parts: [{ text: `Summarize the following notes:\n\n${notes}` }] }], // ✅ Correct payload format
         },
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${API_KEY}`,
           },
         }
       );
 
-      const summaryText = response.data.candidates?.[0]?.output || "No summary generated.";
+      console.log("API Response:", response.data); // ✅ Debugging response
+
+      const summaryText =
+        response.data.candidates?.[0]?.content?.parts?.[0]?.text || "No summary generated."; // ✅ Corrected response access
+
       setSummary(summaryText.trim());
     } catch (error) {
-      console.error("Error summarizing:", error.response || error);
-      setError("Failed to summarize. Please try again!");
+      console.error("API Error:", error.response?.data || error.message);
+      setError("❌ Failed to summarize. Please try again!");
     } finally {
       setLoading(false);
     }
@@ -45,7 +49,7 @@ const NotesSummarizer = () => {
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(summary);
-    alert("Summary copied to clipboard! 📋");
+    alert("📋 Summary copied to clipboard!");
   };
 
   return (

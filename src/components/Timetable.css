@@ -1,53 +1,52 @@
 .timetable-container {
-    background: #d1c4e9;
+    max-width: 400px;
+    margin: 20px auto;
     padding: 20px;
     border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
     text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    max-width: 450px;
-    margin: auto;
-}
-
-.timetable-container h2 {
-    color: #512da8;
-    margin-bottom: 15px;
-}
-
-.timetable-container input {
-    width: 100%;
-    padding: 10px;
-    border: 2px solid #673ab7;
-    border-radius: 5px;
+  }
+  
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  input {
+    padding: 8px;
     font-size: 16px;
-    margin-bottom: 10px;
-}
-
-.timetable-container button {
-    background: #673ab7;
-    color: white;
-    border: none;
-    padding: 10px;
+    border: 1px solid #ccc;
     border-radius: 5px;
+  }
+  
+  button {
+    padding: 8px;
+    font-size: 16px;
     cursor: pointer;
-    font-size: 16px;
-}
-
-.timetable-container button:hover {
-    background: #512da8;
-}
-
-.timetable-container ul {
+    border: none;
+    border-radius: 5px;
+    color: white;
+    background-color: #007bff;
+    transition: 0.3s;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  .schedule-list {
     list-style: none;
     padding: 0;
-    margin-top: 15px;
-}
-
-.timetable-container li {
-    background: white;
+  }
+  
+  .schedule-item {
     padding: 10px;
-    margin: 5px 0;
     border-radius: 5px;
-    border-left: 5px solid #9575cd;
-    font-size: 16px;
-    text-align: left;
-}
+    margin: 5px 0;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
