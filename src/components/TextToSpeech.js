@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
-import mammoth from "mammoth"; // For DOCX file reading
-import * as pdfjsLib from "pdfjs-dist"; // For PDF file reading
-import "pdfjs-dist/build/pdf.worker"; 
-import "./TextToSpeech.css"; 
+import mammoth from "mammoth"; // For DOCX
+import * as pdfjsLib from "pdfjs-dist"; // For PDF
+import "pdfjs-dist/build/pdf.worker";
 
 const TextToSpeech = () => {
   const [fileContent, setFileContent] = useState("");
@@ -12,11 +11,9 @@ const TextToSpeech = () => {
   const synth = window.speechSynthesis;
   let utterance = null;
 
-  // Handle file upload
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
-
     const fileType = file.name.split(".").pop().toLowerCase();
 
     if (fileType === "txt") {
@@ -30,14 +27,12 @@ const TextToSpeech = () => {
     }
   };
 
-  // Read TXT File
   const readTxtFile = (file) => {
     const reader = new FileReader();
     reader.onload = (e) => setFileContent(e.target.result);
     reader.readAsText(file);
   };
 
-  // Read PDF File
   const readPdfFile = async (file) => {
     const reader = new FileReader();
     reader.onload = async (e) => {
@@ -45,13 +40,11 @@ const TextToSpeech = () => {
         const typedArray = new Uint8Array(e.target.result);
         const pdf = await pdfjsLib.getDocument({ data: typedArray }).promise;
         let text = "";
-
         for (let i = 1; i <= pdf.numPages; i++) {
           const page = await pdf.getPage(i);
           const content = await page.getTextContent();
           text += content.items.map((item) => item.str).join(" ") + "\n";
         }
-
         setFileContent(text);
       } catch (error) {
         console.error("Error reading PDF:", error);
@@ -61,7 +54,6 @@ const TextToSpeech = () => {
     reader.readAsArrayBuffer(file);
   };
 
-  // Read DOCX File
   const readDocxFile = async (file) => {
     const reader = new FileReader();
     reader.onload = async (e) => {
@@ -76,18 +68,14 @@ const TextToSpeech = () => {
     reader.readAsArrayBuffer(file);
   };
 
-  // Convert text to speech
   const handleTextToSpeech = () => {
     if (isPlaying) return;
-    
     utterance = new SpeechSynthesisUtterance(fileContent);
     synth.speak(utterance);
     setIsPlaying(true);
-
     utterance.onend = () => setIsPlaying(false);
   };
 
-  // Pause speech
   const handlePauseSpeech = () => {
     if (synth.speaking) {
       synth.pause();
@@ -95,7 +83,6 @@ const TextToSpeech = () => {
     }
   };
 
-  // Resume speech
   const handleResumeSpeech = () => {
     if (!isPlaying && synth.paused) {
       synth.resume();
@@ -103,14 +90,13 @@ const TextToSpeech = () => {
     }
   };
 
-  // Optional: Use GPT API to enhance text (Requires API Key)
   const fetchFromGPT = async () => {
     setLoading(true);
     try {
       const response = await axios.post(
         "https://api.openai.com/v1/chat/completions",
         {
-          model: "gpt-4", // Change to "gpt-3.5-turbo" if needed
+          model: "gpt-4",
           messages: [{ role: "system", content: fileContent }],
         },
         {
@@ -128,36 +114,55 @@ const TextToSpeech = () => {
   };
 
   return (
-    <div className="container">
-      <div className="card">
-        <h1>Text to Speech App</h1>
-        
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4">
+      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-2xl text-center space-y-4">
+        <h1 className="text-2xl font-bold text-gray-800">Text to Speech App</h1>
+
         <input
           type="file"
           accept=".txt,.pdf,.docx"
           onChange={handleFileUpload}
-          className="file-input"
+          className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring focus:ring-blue-400"
         />
-        
+
         <textarea
           value={fileContent}
           onChange={(e) => setFileContent(e.target.value)}
           rows="5"
-          className="textarea"
+          className="w-full border border-gray-300 rounded px-4 py-2 resize-none focus:outline-none focus:ring focus:ring-blue-400"
           placeholder="Text from file will appear here..."
         ></textarea>
 
-        <div className="button-container">
-          <button onClick={handleTextToSpeech} className="speak-button" disabled={isPlaying}>
+        <div className="flex flex-wrap gap-3 justify-center pt-2">
+          <button
+            onClick={handleTextToSpeech}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition"
+            disabled={isPlaying}
+          >
             ▶ Play
           </button>
-          <button onClick={handlePauseSpeech} className="pause-button">
+
+          <button
+            onClick={handlePauseSpeech}
+            className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded transition"
+          >
             ⏸ Pause
           </button>
-          <button onClick={handleResumeSpeech} className="resume-button">
+
+          <button
+            onClick={handleResumeSpeech}
+            className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded transition"
+          >
             🔄 Resume
           </button>
-          <button onClick={fetchFromGPT} className="gpt-button" disabled={loading}>
+
+          <button
+            onClick={fetchFromGPT}
+            className={`${
+              loading ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"
+            } text-white px-4 py-2 rounded transition`}
+            disabled={loading}
+          >
             {loading ? "Loading..." : "Enhance with GPT"}
           </button>
         </div>

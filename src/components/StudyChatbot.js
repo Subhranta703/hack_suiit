@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
-import "./StudyChatbot.css";
 
 function StudyChatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -8,11 +7,7 @@ function StudyChatbot() {
     { sender: "bot", text: "Hello! Ask me anything about studying 📚" },
   ]);
   const [input, setInput] = useState("");
-  const API_KEY = "AIzaSyAF7MBAQrGMyjJ86Lf4QaxIchF6KoDSzTQ"; // Replace with actual API Key
-
-  useEffect(() => {
-    
-  }, [isOpen]);
+  const API_KEY = "AIzaSyAF7MBAQrGMyjJ86Lf4QaxIchF6KoDSzTQ";
 
   const fetchAIResponse = async (userMessage) => {
     try {
@@ -21,14 +16,13 @@ function StudyChatbot() {
         {
           contents: [{ role: "user", parts: [{ text: userMessage }] }],
         },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
+        { headers: { "Content-Type": "application/json" } }
       );
 
-      console.log("API Response:", response.data);
-
-      return response.data.candidates?.[0]?.content?.parts?.[0]?.text || "I'm not sure, but I can try to help!";
+      return (
+        response.data.candidates?.[0]?.content?.parts?.[0]?.text ||
+        "I'm not sure, but I can try to help!"
+      );
     } catch (error) {
       console.error("API Error:", error.response?.data || error.message);
       return "Sorry, I'm having trouble responding. Please try again!";
@@ -38,17 +32,17 @@ function StudyChatbot() {
   const handleSendMessage = async () => {
     if (!input.trim()) return;
 
-    const userMessage = { sender: "user", text: input };
-    setMessages((prevMessages) => [...prevMessages, userMessage]);
-
-    // Show a loading message while fetching response
-    setMessages((prevMessages) => [...prevMessages, { sender: "bot", text: "Thinking... 🤔" }]);
+    // Add user message
+    setMessages((prev) => [...prev, { sender: "user", text: input }]);
+    // Show loading
+    setMessages((prev) => [...prev, { sender: "bot", text: "Thinking... 🤔" }]);
 
     const botResponse = await fetchAIResponse(input);
 
-    setMessages((prevMessages) =>
-      prevMessages.map((msg, index) =>
-        index === prevMessages.length - 1 ? { sender: "bot", text: botResponse } : msg
+    // Replace loading with actual response
+    setMessages((prev) =>
+      prev.map((msg, idx) =>
+        idx === prev.length - 1 ? { sender: "bot", text: botResponse } : msg
       )
     );
 
@@ -56,36 +50,57 @@ function StudyChatbot() {
   };
 
   return (
-    <div className="chatbot">
-      {/* Floating Circular Button */}
+    <div className="font-sans">
       {!isOpen && (
-        <button className="chatbot-toggle" onClick={() => setIsOpen(true)}>
+        <button
+          onClick={() => setIsOpen(true)}
+          className="fixed bottom-5 right-5 w-[60px] h-[60px] bg-gradient-to-br from-[#6a11cb] to-[#2575fc] text-white rounded-full text-2xl flex items-center justify-center shadow-lg transition-transform hover:scale-110"
+        >
           💬
         </button>
       )}
 
-      {/* Chat Window */}
       {isOpen && (
-        <div className="chat-window">
-          <div className="chat-header">
-            <h3>📚 Study Chatbot</h3>
-            <button className="close-btn" onClick={() => setIsOpen(false)}>✖</button>
+        <div className="fixed bottom-[80px] right-5 w-[350px] bg-white/20 backdrop-blur-md rounded-xl shadow-2xl overflow-hidden z-50">
+          <div className="flex justify-between items-center bg-gradient-to-br from-[#6a11cb] to-[#2575fc] text-white px-4 py-3 rounded-t-xl">
+            <h3 className="text-lg font-medium">📚 Study Chatbot</h3>
+            <button
+              onClick={() => setIsOpen(false)}
+              className="text-xl transition-transform hover:rotate-90"
+            >
+              ✖
+            </button>
           </div>
-          <div className="chat-box">
-            {messages.map((msg, index) => (
-              <div key={index} className={`message ${msg.sender}`}>
+
+          <div className="max-h-[300px] overflow-y-auto p-4 flex flex-col gap-2">
+            {messages.map((msg, idx) => (
+              <div
+                key={idx}
+                className={`p-3 rounded-[18px] text-sm max-w-[75%] break-words shadow ${
+                  msg.sender === "bot"
+                    ? "bg-gray-100 self-start"
+                    : "bg-gradient-to-br from-[#6a11cb] to-[#2575fc] text-white self-end text-right"
+                }`}
+              >
                 {msg.text}
               </div>
             ))}
           </div>
-          <div className="chat-input">
+
+          <div className="flex p-3 border-t border-white/20 bg-white/30">
             <input
               type="text"
               value={input}
-              placeholder="Ask about studying..."
               onChange={(e) => setInput(e.target.value)}
+              placeholder="Ask about studying..."
+              className="flex-1 p-2 rounded-full outline-none bg-white text-sm focus:ring-2 focus:ring-indigo-300"
             />
-            <button onClick={handleSendMessage}>Send</button>
+            <button
+              onClick={handleSendMessage}
+              className="ml-2 px-4 py-2 rounded-full bg-gradient-to-br from-[#6a11cb] to-[#2575fc] text-white transition-transform hover:scale-105"
+            >
+              Send
+            </button>
           </div>
         </div>
       )}

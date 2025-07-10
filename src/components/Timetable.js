@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "./Timetable.css";
 
 const Timetable = () => {
   const [schedule, setSchedule] = useState([]);
@@ -15,17 +14,16 @@ const Timetable = () => {
           if (currentTime >= entry.alertTime) {
             sendNotification(entry.task);
             sendWhatsAppReminder(entry.task);
-            return false; // Remove task after alert
+            return false;
           }
           return true;
         })
       );
-    }, 1000); // Check every second
+    }, 1000);
 
     return () => clearInterval(interval);
   }, []);
 
-  // Send Browser Notification
   const sendNotification = (task) => {
     if (Notification.permission === "granted") {
       new Notification("⏳ Task Reminder", { body: `Reminder for: ${task}` });
@@ -34,16 +32,13 @@ const Timetable = () => {
     }
   };
 
-  // Send WhatsApp Reminder (Pre-filled Message Link)
   const sendWhatsAppReminder = (task) => {
-    const phoneNumber = "918260912891";  // Ensure correct format
+    const phoneNumber = "918260912891";
     const message = encodeURIComponent(`⏳ Reminder: ${task}`);
     const whatsappLink = `https://wa.me/${phoneNumber}?text=${message}`;
-    
-    window.open(whatsappLink, "_blank"); // Opens WhatsApp chat with pre-filled message
+    window.open(whatsappLink, "_blank");
   };
 
-  // Add new schedule
   const addSchedule = () => {
     if (!task.trim() || !delayMinutes || isNaN(delayMinutes) || delayMinutes <= 0) {
       return alert("Please enter a valid task and delay time!");
@@ -56,15 +51,16 @@ const Timetable = () => {
   };
 
   return (
-    <div className="timetable-container">
-      <h2>📅 Timed Alerts with WhatsApp Reminder</h2>
+    <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-lg text-center">
+      <h2 className="text-xl font-semibold text-gray-800 mb-4">📅 Timed Alerts with WhatsApp Reminder</h2>
 
-      <div className="input-group">
+      <div className="flex flex-col gap-3 mb-6">
         <input
           type="text"
           value={task}
           onChange={(e) => setTask(e.target.value)}
           placeholder="Enter Task (e.g., Meeting, Study)"
+          className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <input
           type="number"
@@ -72,14 +68,25 @@ const Timetable = () => {
           onChange={(e) => setDelayMinutes(e.target.value)}
           placeholder="Delay in Minutes"
           min="1"
+          className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <button onClick={addSchedule}>Set Reminder</button>
+        <button
+          onClick={addSchedule}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition"
+        >
+          Set Reminder
+        </button>
       </div>
 
-      <ul className="schedule-list">
+      <ul className="space-y-2">
         {schedule.map((entry, index) => (
-          <li key={index} className="schedule-item">
-            <span>⏳ {entry.task} - Alert in {Math.max(0, Math.round((entry.alertTime - new Date().getTime()) / 60000))} min</span>
+          <li
+            key={index}
+            className="bg-gray-100 p-3 rounded-md shadow-sm text-gray-700 text-sm"
+          >
+            ⏳ {entry.task} - Alert in{" "}
+            {Math.max(0, Math.round((entry.alertTime - new Date().getTime()) / 60000))}{" "}
+            min
           </li>
         ))}
       </ul>
